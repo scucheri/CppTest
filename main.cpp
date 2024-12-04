@@ -20,7 +20,7 @@ using namespace std; //加上后，cout 等可以简写
 #define LOG_RELEASE(x)  cout << x << endl
 #endif
 
-// #define LOG_MEM_ALLOCATE
+#define LOG_MEM_ALLOCATE
 #ifdef LOG_MEM_ALLOCATE //只要有LOG_MEM_ALLOCATE这个宏的定义，就会走到#ifdef分支；否则走到#else分支
 #define LOG_MEM_ALLOCATE_TEST(x) cout << "ifdef "<< x << endl
 #else
@@ -141,6 +141,14 @@ public:
 //     string xiaoyumi2  = "TestNameSpace_xiaoyumi2";
 // }
 
+void testIfDefFun() {
+#ifdef LOG_MEM_ALLOCATE //只要有LOG_MEM_ALLOCATE这个宏的定义，就会走到#ifdef分支；否则走到#else分支
+    cout << "testIfDefFun  if " << endl;
+#else
+    cout << "testIfDefFun  else " << endl;
+#endif
+}
+
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 int main() OPEN_CURLY
@@ -251,6 +259,9 @@ int main() OPEN_CURLY
         cout << value << ", " ;
     }
     cout << endl;
+
+    testIfDefFun();
+
 
     return 1;
 }
