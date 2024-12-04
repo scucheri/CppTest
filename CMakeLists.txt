@@ -18,4 +18,5 @@ add_executable(HelloWorld main.cpp
         Common.cpp
         Common.h
         sub/Test.cpp
-        sub/Test.h)
+        sub/Test.h
+)
