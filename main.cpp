@@ -69,6 +69,10 @@ if(*(a+j) > *(a+j+1))\
 }\
 }
 
+// #define MAX(x, y) (x > y ? x : y)
+
+#define MAX(x, y) x > y ? x : y
+#define MAX_2(x, y) (x > y ? x : y)
 
 class Entity {
 public:
@@ -256,12 +260,17 @@ int main() OPEN_CURLY
     SORT(data, 3);
     cout << "after sort: " << endl;
     for (int value: data) {
-        cout << value << ", " ;
+        cout << value << ", ";
     }
     cout << endl;
 
     testIfDefFun();
 
+    int ret1 = MAX(7, 5) * 10;// 7 > 5 ? 7 : 5 * 10,编译后变成这个，所以返回了7
+    cout << "MAX without  bracket " << ret1 << endl;
+
+    int ret2 = MAX_2(7, 5) * 10; //(7 > 5 ? 7 : 5) * 10 编译后变成这个，所以返回了70
+    cout << "MAX with  bracket " << ret2 << endl;
 
     return 1;
 }
