@@ -201,13 +201,19 @@ void ex1() {
     {
         puts("Entering ex1::scope1");
         auto e1 = std::make_unique<MemEntity>("ex1_e1");
+        //推荐使用的方式是make_unique这种
+        std::unique_ptr<MemEntity> testE1 = std::make_unique<MemEntity>("ex1_testE1");
+        testE1->test();
+        std::unique_ptr<MemEntity> testE2(new MemEntity("ex1_testE2"));
+        testE2->test();
         puts("Leaving ex1::scope1");
     }
     puts("Leaving ex1");
 }
 
-void foo(std::unique_ptr<MemEntity>) {
+void foo(std::unique_ptr<MemEntity> ptr) {
     puts("Entering foo");
+    puts(ptr->test());
     puts("Leaving foo");
 }
 
@@ -215,7 +221,13 @@ void ex2() {
     puts("--------");
     puts("Entering ex2");
     auto e1 = std::make_unique<MemEntity>("ex2_e1");
-    foo(std::move(e1));
+    // auto e2 = e1;//这个不被允许
+    auto e2 = std::move(e1);
+    // foo(std::move(e1));//这里e1的所有权已经转移给e2了，e1已经是个空指针了
+    if (e1 == nullptr ) {
+        puts("ex2 : e1 is null");
+    }
+    foo(std::move(e2));
     // e1 was destoried.
     puts("Leaving ex2");
 }
@@ -248,8 +260,8 @@ void ex3() {
 }
 
 void observe(std::weak_ptr<MemEntity> ew) {
-    if (std::shared_ptr<MemEntity> spt = ew.lock()) {
-        std::cout << spt.use_count() << std::endl;
+    if (std::shared_ptr<MemEntity> spt = ew.lock()) {//调用lock的时候会使得引用计数+1
+        std::cout <<" e1.use_count when weak_ptr lock"<<  spt.use_count() << std::endl;
         std::cout << "entity still alive!" << std::endl;
     } else {
         std::cout << "entity was expired :(" << std::endl;
@@ -262,14 +274,20 @@ void ex4() {
     std::weak_ptr<MemEntity> ew;
     {
         puts("Entering ex4::scope1");
-        auto e1 = std::make_shared<MemEntity>("ex4_e1");
-        std::cout << e1.use_count() << std::endl;
+        auto e1 = std::make_shared<MemEntity>("ex4_e1");//shared_ptr定义的两种方法
+        std::shared_ptr<MemEntity> testE1(new MemEntity("ex4_testE1"));
+        testE1->test();
+        std::cout <<" e1.use_count"<< e1.use_count() << std::endl;
+        std::cout <<" ew.use_count"<< ew.use_count() << std::endl;
         ew = e1; // use_count remains
-        std::cout << e1.use_count() << std::endl;
+        std::cout <<" e1.use_count after weak_ptr"<< e1.use_count() << std::endl;
+        std::cout <<" ew.use_count after weak_ptr"<< ew.use_count() << std::endl;
         observe(ew);
+        std::cout <<" ew.use_count after observe"<< ew.use_count() << std::endl;
         puts("Leaving ex4::scope1");
     }
     observe(ew);
+    std::cout << ew.use_count() << std::endl;
     puts("Leaving ex4");
 }
 
