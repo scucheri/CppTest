@@ -179,9 +179,20 @@ void testIfDefFun() {
 }
 
 class MemEntity {
+    private:
+    string name = "MemEntity_name";
 public:
-    MemEntity() { puts("MemEntity created!"); }
-    ~MemEntity() { puts("MemEntity destroyed!"); }
+    MemEntity(string nameStr) {
+        name = nameStr;
+        puts( std::format("MemEntity created!, {}!", name.c_str()).c_str());
+    }
+    ~MemEntity() {
+        puts( std::format("MemEntity destroyed!, {}!", name.c_str()).c_str());
+    }
+
+    const char* test() {
+        return name.c_str();
+    }
 };
 
 void ex1() {
@@ -189,7 +200,7 @@ void ex1() {
     puts("Entering ex1");
     {
         puts("Entering ex1::scope1");
-        auto e1 = std::make_unique<MemEntity>();
+        auto e1 = std::make_unique<MemEntity>("ex1_e1");
         puts("Leaving ex1::scope1");
     }
     puts("Leaving ex1");
@@ -203,7 +214,7 @@ void foo(std::unique_ptr<MemEntity>) {
 void ex2() {
     puts("--------");
     puts("Entering ex2");
-    auto e1 = std::make_unique<MemEntity>();
+    auto e1 = std::make_unique<MemEntity>("ex2_e1");
     foo(std::move(e1));
     // e1 was destoried.
     puts("Leaving ex2");
@@ -212,17 +223,27 @@ void ex2() {
 void ex3() {
     puts("--------");
     puts("Entering ex3");
-    auto e1 = std::make_shared<MemEntity>();
+    auto e1 = std::make_shared<MemEntity>("ex3_e1");
     std::cout << e1.use_count() << std::endl;
     {
         puts("Entering ex3::scope1");
         auto e2 = e1; // use_count ++
-        std::cout << e1.use_count() << std::endl;
+        std::cout <<"e1.use_count() " <<e1.use_count() << std::endl;
+        std::cout <<"e2.use_count() " <<e2.use_count() << std::endl;
+
+        std::cout <<"e2 before std::move  " <<e2.get() << std::endl;
         auto e3 = std::move(e2); // use_count remains
-        std::cout << e1.use_count() << std::endl;
+        std::cout <<"e2 after std::move  " <<e2.get() << std::endl;
+        std::cout <<"e2 after std::move e2  is nullptr  " <<(e2 == nullptr) << std::endl;
+        // std::cout <<"e2 after std::move  " <<e2->test() << std::endl;
+        std::cout <<"e3 after std::move  " <<e3->test() << std::endl;
+
+        std::cout << "e1.use_count() "<<e1.use_count() << std::endl;
+        std::cout <<"e2.use_count() " <<e2.use_count() << std::endl;
+        std::cout <<"e3.use_count() " <<e3.use_count() << std::endl;
         puts("Leaving ex3::scope1");
     }
-    std::cout << e1.use_count() << std::endl;
+     std::cout << "e1.use_count() "<<e1.use_count() << std::endl;
     puts("Leaving ex3");
 }
 
@@ -241,7 +262,7 @@ void ex4() {
     std::weak_ptr<MemEntity> ew;
     {
         puts("Entering ex4::scope1");
-        auto e1 = std::make_shared<MemEntity>();
+        auto e1 = std::make_shared<MemEntity>("ex4_e1");
         std::cout << e1.use_count() << std::endl;
         ew = e1; // use_count remains
         std::cout << e1.use_count() << std::endl;
