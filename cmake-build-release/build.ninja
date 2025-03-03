@@ -73,8 +73,8 @@ build CMakeFiles/HelloWorld.dir/sub/Test.cpp.o: CXX_COMPILER__HelloWorld_unscann
   OBJECT_DIR = CMakeFiles/HelloWorld.dir
   OBJECT_FILE_DIR = CMakeFiles/HelloWorld.dir/sub
 
-build CMakeFiles/HelloWorld.dir/TestMain2.cpp.o: CXX_COMPILER__HelloWorld_unscanned_Release /Users/cheri/code/CPP/CppTest/TestMain2.cpp || cmake_object_order_depends_target_HelloWorld
-  DEP_FILE = CMakeFiles/HelloWorld.dir/TestMain2.cpp.o.d
+build CMakeFiles/HelloWorld.dir/Test.cpp.o: CXX_COMPILER__HelloWorld_unscanned_Release /Users/cheri/code/CPP/CppTest/Test.cpp || cmake_object_order_depends_target_HelloWorld
+  DEP_FILE = CMakeFiles/HelloWorld.dir/Test.cpp.o.d
   FLAGS = -O3 -DNDEBUG -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.6 -fcolor-diagnostics
   OBJECT_DIR = CMakeFiles/HelloWorld.dir
   OBJECT_FILE_DIR = CMakeFiles/HelloWorld.dir
@@ -87,7 +87,7 @@ build CMakeFiles/HelloWorld.dir/TestMain2.cpp.o: CXX_COMPILER__HelloWorld_unscan
 #############################################
 # Link the executable HelloWorld
 
-build HelloWorld: CXX_EXECUTABLE_LINKER__HelloWorld_Release CMakeFiles/HelloWorld.dir/main.cpp.o CMakeFiles/HelloWorld.dir/Log.cpp.o CMakeFiles/HelloWorld.dir/Common.cpp.o CMakeFiles/HelloWorld.dir/sub/Test.cpp.o CMakeFiles/HelloWorld.dir/TestMain2.cpp.o
+build HelloWorld: CXX_EXECUTABLE_LINKER__HelloWorld_Release CMakeFiles/HelloWorld.dir/main.cpp.o CMakeFiles/HelloWorld.dir/Log.cpp.o CMakeFiles/HelloWorld.dir/Common.cpp.o CMakeFiles/HelloWorld.dir/sub/Test.cpp.o CMakeFiles/HelloWorld.dir/Test.cpp.o
   FLAGS = -O3 -DNDEBUG -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.6
   OBJECT_DIR = CMakeFiles/HelloWorld.dir
   POST_BUILD = :

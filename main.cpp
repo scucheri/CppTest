@@ -78,12 +78,17 @@ class Entity {
 public:
     string entityName;
 
+    //virtual function是可以继承的
     virtual string getName() {
         return "Entity";
     };
 
     virtual void printName() {
         cout << "entityName: " << entityName << " Name: " << getName() << endl;
+    }
+
+    virtual void printNameWithTag(string tag) {
+        cout << "tag : "<< tag<<"entityName: " << entityName << " Name: " << getName() << endl;
     }
 };
 
@@ -92,6 +97,10 @@ private:
     string mName;
 
 public:
+    PlayerEntity() : Entity() {
+        mName = "xiaoyumi_default_PlayerEntity";
+    }
+
     PlayerEntity(string name) {
         mName = name;
     }
@@ -104,6 +113,10 @@ public:
         cout << mName << endl;
     }
 };
+
+void printEntityNameWithTag(string tag, Entity entity) {
+    entity.printNameWithTag(tag);
+}
 
 int produceRandom(short min, short max) {
     long timeme = time(nullptr);
@@ -140,6 +153,18 @@ public:
     void put(int index, T value) { mArray[index] = value; }
 };
 
+
+#define NEW_ARRAY(type, size, name)\
+Array<type, size> name
+
+#define NEW_ARRAY_FUN(type, size) newArray<type, size>()
+
+template <typename T, int N>
+Array<T,N> newArray() {
+    return Array<T,N>();
+}
+
+
 // namespace TestNameSpace{
 //     string xiaoyumi = "TestNameSpace_xiaoyumi";
 //     string xiaoyumi2  = "TestNameSpace_xiaoyumi2";
@@ -151,6 +176,87 @@ void testIfDefFun() {
 #else
     cout << "testIfDefFun  else " << endl;
 #endif
+}
+
+class MemEntity {
+public:
+    MemEntity() { puts("MemEntity created!"); }
+    ~MemEntity() { puts("MemEntity destroyed!"); }
+};
+
+void ex1() {
+    puts("--------");
+    puts("Entering ex1");
+    {
+        puts("Entering ex1::scope1");
+        auto e1 = std::make_unique<MemEntity>();
+        puts("Leaving ex1::scope1");
+    }
+    puts("Leaving ex1");
+}
+
+void foo(std::unique_ptr<MemEntity>) {
+    puts("Entering foo");
+    puts("Leaving foo");
+}
+
+void ex2() {
+    puts("--------");
+    puts("Entering ex2");
+    auto e1 = std::make_unique<MemEntity>();
+    foo(std::move(e1));
+    // e1 was destoried.
+    puts("Leaving ex2");
+}
+
+void ex3() {
+    puts("--------");
+    puts("Entering ex3");
+    auto e1 = std::make_shared<MemEntity>();
+    std::cout << e1.use_count() << std::endl;
+    {
+        puts("Entering ex3::scope1");
+        auto e2 = e1; // use_count ++
+        std::cout << e1.use_count() << std::endl;
+        auto e3 = std::move(e2); // use_count remains
+        std::cout << e1.use_count() << std::endl;
+        puts("Leaving ex3::scope1");
+    }
+    std::cout << e1.use_count() << std::endl;
+    puts("Leaving ex3");
+}
+
+void observe(std::weak_ptr<MemEntity> ew) {
+    if (std::shared_ptr<MemEntity> spt = ew.lock()) {
+        std::cout << spt.use_count() << std::endl;
+        std::cout << "entity still alive!" << std::endl;
+    } else {
+        std::cout << "entity was expired :(" << std::endl;
+    }
+}
+
+void ex4() {
+    puts("--------");
+    puts("Entering ex4");
+    std::weak_ptr<MemEntity> ew;
+    {
+        puts("Entering ex4::scope1");
+        auto e1 = std::make_shared<MemEntity>();
+        std::cout << e1.use_count() << std::endl;
+        ew = e1; // use_count remains
+        std::cout << e1.use_count() << std::endl;
+        observe(ew);
+        puts("Leaving ex4::scope1");
+    }
+    observe(ew);
+    puts("Leaving ex4");
+}
+
+void testSmartPointer() {
+    ex1();
+    ex2();
+    ex3();
+    ex4();
 }
 
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -212,7 +318,10 @@ int main() OPEN_CURLY
     // print<int>("hello");//这个编译错误
     print<std::string>("hello yayya");
 
-    Array<string, 5> array;
+    // Array<string, 5> array;// new Array的不同写法
+    // NEW_ARRAY(string, 5, array);
+    // Array<string,5> array = newArray<string,5>();
+    Array<string,5> array = NEW_ARRAY_FUN(string, 5);
     array.put(0, "hello ");
     array.put(1, "xiaoyumi; ");
     array.put(2, "hello ");
@@ -230,14 +339,20 @@ int main() OPEN_CURLY
 
     test();
 
-    //这个是没有默认的Constructor的，所以必须用new
-    // PlayerEntity playerEntity;
-    PlayerEntity *playerEntity = new PlayerEntity("hello xiaoyumi player ");
-    playerEntity->printName();
+    //使用default的constructor初始化
+    PlayerEntity playerEntity;
+    playerEntity.printName();
+    printEntityNameWithTag("printEntityNameWithTag ",playerEntity);
+
+    PlayerEntity *playerEntity1 = new PlayerEntity("hello xiaoyumi player ");
+    playerEntity1->printName();
+  printEntityNameWithTag("printEntityNameWithTag ", *playerEntity1);
+
 
     Entity entity; // 这个是有默认的Constructor的，所以可以不用new
     entity.entityName = "hello entity";
     entity.printName();
+   printEntityNameWithTag("printEntityNameWithTag ",  entity);
 
     using namespace TestNameSpace;
     cout << xiaoyumi << endl;
@@ -272,6 +387,8 @@ int main() OPEN_CURLY
     int ret2 = MAX_2(7, 5) * 10; //(7 > 5 ? 7 : 5) * 10 编译后变成这个，所以返回了70
     cout << "MAX with  bracket " << ret2 << endl;
 
+
+  testSmartPointer();
     return 1;
 }
 

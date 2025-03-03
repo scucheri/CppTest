@@ -77,6 +77,13 @@ build CMakeFiles/HelloWorld.dir/sub/Test.cpp.o: CXX_COMPILER__HelloWorld_unscann
   OBJECT_DIR = CMakeFiles/HelloWorld.dir
   OBJECT_FILE_DIR = CMakeFiles/HelloWorld.dir/sub
 
+build CMakeFiles/HelloWorld.dir/Test.cpp.o: CXX_COMPILER__HelloWorld_unscanned_Debug /Users/cheri/code/CPP/CppTest/Test.cpp || cmake_object_order_depends_target_HelloWorld
+  DEFINES = -D__DEBUG__
+  DEP_FILE = CMakeFiles/HelloWorld.dir/Test.cpp.o.d
+  FLAGS = -g -DMY_DEBUG -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.6 -fcolor-diagnostics
+  OBJECT_DIR = CMakeFiles/HelloWorld.dir
+  OBJECT_FILE_DIR = CMakeFiles/HelloWorld.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target HelloWorld
@@ -85,7 +92,7 @@ build CMakeFiles/HelloWorld.dir/sub/Test.cpp.o: CXX_COMPILER__HelloWorld_unscann
 #############################################
 # Link the executable HelloWorld
 
-build HelloWorld: CXX_EXECUTABLE_LINKER__HelloWorld_Debug CMakeFiles/HelloWorld.dir/main.cpp.o CMakeFiles/HelloWorld.dir/Log.cpp.o CMakeFiles/HelloWorld.dir/Common.cpp.o CMakeFiles/HelloWorld.dir/sub/Test.cpp.o
+build HelloWorld: CXX_EXECUTABLE_LINKER__HelloWorld_Debug CMakeFiles/HelloWorld.dir/main.cpp.o CMakeFiles/HelloWorld.dir/Log.cpp.o CMakeFiles/HelloWorld.dir/Common.cpp.o CMakeFiles/HelloWorld.dir/sub/Test.cpp.o CMakeFiles/HelloWorld.dir/Test.cpp.o
   FLAGS = -g -DMY_DEBUG -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.6
   OBJECT_DIR = CMakeFiles/HelloWorld.dir
   POST_BUILD = :
