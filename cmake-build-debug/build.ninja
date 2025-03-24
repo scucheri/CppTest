@@ -50,35 +50,30 @@ cmake_ninja_workdir = /Users/cheri/code/CPP/CppTest/cmake-build-debug/
 build cmake_object_order_depends_target_HelloWorld: phony || .
 
 build CMakeFiles/HelloWorld.dir/main.cpp.o: CXX_COMPILER__HelloWorld_unscanned_Debug /Users/cheri/code/CPP/CppTest/main.cpp || cmake_object_order_depends_target_HelloWorld
-  DEFINES = -D__DEBUG__
   DEP_FILE = CMakeFiles/HelloWorld.dir/main.cpp.o.d
   FLAGS = -g -DMY_DEBUG -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.6 -fcolor-diagnostics
   OBJECT_DIR = CMakeFiles/HelloWorld.dir
   OBJECT_FILE_DIR = CMakeFiles/HelloWorld.dir
 
 build CMakeFiles/HelloWorld.dir/Log.cpp.o: CXX_COMPILER__HelloWorld_unscanned_Debug /Users/cheri/code/CPP/CppTest/Log.cpp || cmake_object_order_depends_target_HelloWorld
-  DEFINES = -D__DEBUG__
   DEP_FILE = CMakeFiles/HelloWorld.dir/Log.cpp.o.d
   FLAGS = -g -DMY_DEBUG -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.6 -fcolor-diagnostics
   OBJECT_DIR = CMakeFiles/HelloWorld.dir
   OBJECT_FILE_DIR = CMakeFiles/HelloWorld.dir
 
 build CMakeFiles/HelloWorld.dir/Common.cpp.o: CXX_COMPILER__HelloWorld_unscanned_Debug /Users/cheri/code/CPP/CppTest/Common.cpp || cmake_object_order_depends_target_HelloWorld
-  DEFINES = -D__DEBUG__
   DEP_FILE = CMakeFiles/HelloWorld.dir/Common.cpp.o.d
   FLAGS = -g -DMY_DEBUG -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.6 -fcolor-diagnostics
   OBJECT_DIR = CMakeFiles/HelloWorld.dir
   OBJECT_FILE_DIR = CMakeFiles/HelloWorld.dir
 
 build CMakeFiles/HelloWorld.dir/sub/Test.cpp.o: CXX_COMPILER__HelloWorld_unscanned_Debug /Users/cheri/code/CPP/CppTest/sub/Test.cpp || cmake_object_order_depends_target_HelloWorld
-  DEFINES = -D__DEBUG__
   DEP_FILE = CMakeFiles/HelloWorld.dir/sub/Test.cpp.o.d
   FLAGS = -g -DMY_DEBUG -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.6 -fcolor-diagnostics
   OBJECT_DIR = CMakeFiles/HelloWorld.dir
   OBJECT_FILE_DIR = CMakeFiles/HelloWorld.dir/sub
 
 build CMakeFiles/HelloWorld.dir/Test.cpp.o: CXX_COMPILER__HelloWorld_unscanned_Debug /Users/cheri/code/CPP/CppTest/Test.cpp || cmake_object_order_depends_target_HelloWorld
-  DEFINES = -D__DEBUG__
   DEP_FILE = CMakeFiles/HelloWorld.dir/Test.cpp.o.d
   FLAGS = -g -DMY_DEBUG -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.6 -fcolor-diagnostics
   OBJECT_DIR = CMakeFiles/HelloWorld.dir

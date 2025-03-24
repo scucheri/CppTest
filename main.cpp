@@ -182,6 +182,11 @@ class MemEntity {
     private:
     string name = "MemEntity_name";
 public:
+    MemEntity() {
+        name = "MemEntity_name_default";
+        puts( std::format("MemEntity created!, {}!", name.c_str()).c_str());
+    }
+
     MemEntity(string nameStr) {
         name = nameStr;
         puts( std::format("MemEntity created!, {}!", name.c_str()).c_str());
@@ -291,11 +296,44 @@ void ex4() {
     puts("Leaving ex4");
 }
 
+void ex5() {
+    puts("Entering ex5");
+    MemEntity mem_entity;// 会用默认的构造函数初始化MemEntity_name_default
+    //局部变量执行结束后会被自动析构
+
+    MemEntity mem_entity_1 =   MemEntity("ex5_e1");
+}
+
+void ex6() {
+    try {
+        MemEntity* mem_entity = new MemEntity("ex6_e1");
+        puts("Entering ex6");
+        throw std::runtime_error("ex6 Error!"); // 抛出异常
+        mem_entity->test();
+    } catch (const std::exception& e) {
+        puts("ex6 error occured!  " );
+    }
+}
+
+class TestStatic {
+  public:
+    static MemEntity* mem_entity;
+    static MemEntity stack_mem_entity;
+    static unique_ptr<MemEntity> mem_entity_smart_pointer;
+
+};
+
+MemEntity* TestStatic::mem_entity = new MemEntity("TestStatic"); //这种写法需要手动delete才能释放，进程退出时也不能自动释放
+MemEntity TestStatic::stack_mem_entity =  MemEntity("TestStaticStack"); //这种写法不需要手动delete，在进程退出时会自动释放
+unique_ptr<MemEntity> TestStatic::mem_entity_smart_pointer = std::make_unique<MemEntity>("TestStaticSmartPointer"); //这种写法不需要手动delete，在进程退出时会自动释放
+
 void testSmartPointer() {
     ex1();
     ex2();
     ex3();
     ex4();
+    ex5();
+    ex6();
 }
 
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
