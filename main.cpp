@@ -1,5 +1,7 @@
 #include <iostream>
 #include <sstream>
+#include <thread>
+
 #include "Log.h"
 #include "Common.h"
 #include "sub/Test.h"
@@ -301,12 +303,12 @@ void ex5() {
     MemEntity mem_entity;// 会用默认的构造函数初始化MemEntity_name_default
     //局部变量执行结束后会被自动析构
 
-    MemEntity mem_entity_1 =   MemEntity("ex5_e1");
+    MemEntity mem_entity_1 =  MemEntity("ex5_e1");//这种写法分配的是栈内存，会自动释放内存
 }
 
 void ex6() {
     try {
-        MemEntity* mem_entity = new MemEntity("ex6_e1");
+        MemEntity* mem_entity = new MemEntity("ex6_e1");//这个使用new创建的堆内存对象，不能自动释放
         puts("Entering ex6");
         throw std::runtime_error("ex6 Error!"); // 抛出异常
         mem_entity->test();
@@ -315,17 +317,37 @@ void ex6() {
     }
 }
 
+void test_ex7(MemEntity* mem_entity) {
+    std::cout <<"test_ex7  " <<mem_entity->test() << std::endl;
+}
+
+void test_ex7_1(MemEntity mem_entity) {
+    std::cout <<"test_ex7_1  " <<mem_entity.test() << std::endl;
+}
+
+void ex7() {
+    puts("Entering ex7");
+    MemEntity* mem_entity_ptr = new MemEntity("ex7_e1_ptr");
+    MemEntity mem_entity =  MemEntity("ex7_e1");
+    {
+        test_ex7(mem_entity_ptr);
+        test_ex7_1(mem_entity);
+    }
+}
+
 class TestStatic {
   public:
     static MemEntity* mem_entity;
     static MemEntity stack_mem_entity;
-    static unique_ptr<MemEntity> mem_entity_smart_pointer;
+    static unique_ptr<MemEntity> mem_entity_unique_ptr;
+    static shared_ptr<MemEntity> mem_entity_shared_ptr;
 
 };
 
 MemEntity* TestStatic::mem_entity = new MemEntity("TestStatic"); //这种写法需要手动delete才能释放，进程退出时也不能自动释放
 MemEntity TestStatic::stack_mem_entity =  MemEntity("TestStaticStack"); //这种写法不需要手动delete，在进程退出时会自动释放
-unique_ptr<MemEntity> TestStatic::mem_entity_smart_pointer = std::make_unique<MemEntity>("TestStaticSmartPointer"); //这种写法不需要手动delete，在进程退出时会自动释放
+unique_ptr<MemEntity> TestStatic::mem_entity_unique_ptr = std::make_unique<MemEntity>("TestStatic_unique_ptr"); //这种写法不需要手动delete，在进程退出时会自动释放
+shared_ptr<MemEntity> TestStatic::mem_entity_shared_ptr = std::make_shared<MemEntity>("TestStatic_shared_ptr"); //这种写法不需要手动delete，在进程退出时会自动释放
 
 void testSmartPointer() {
     ex1();
@@ -334,6 +356,77 @@ void testSmartPointer() {
     ex4();
     ex5();
     ex6();
+    ex7();
+}
+
+std::mutex mtx;
+void worker_thread(int id) {
+    std::unique_lock<std::mutex> lock(mtx);
+
+    std::cout << "Thread " << id << " acquired the lock\n";
+
+    // 执行一些需要锁的操作
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // 暂时释放锁以执行不需要锁的操作
+    lock.unlock();
+    std::cout << "Thread " << id << " released the lock temporarily\n";
+
+    // 执行不需要锁的操作
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    // 重新获取锁
+    lock.lock();
+    std::cout << "Thread " << id << " reacquired the lock\n";
+
+    // 执行剩余需要锁的操作
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));//这里作用域结束后，lock会被自动解锁
+}
+void testLock() {
+    std::thread t1(worker_thread, 1);
+    std::thread t2(worker_thread, 2);
+
+    t1.join();
+    t2.join();
+}
+
+std::mutex mtx1;
+std::condition_variable cv;
+std::queue<int> data_queue;
+void producer_thread() {
+    for (int i = 0; i < 5; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+        std::unique_lock<std::mutex> lock(mtx1);
+        data_queue.push(i);
+        std::cout << "Produced: " << i << std::endl;
+
+        lock.unlock();  // 可以在通知前解锁
+        cv.notify_one();  // 通知消费者
+    }
+}
+
+void consumer_thread() {
+    for (int i = 0; i < 5; ++i) {
+        std::unique_lock<std::mutex> lock(mtx1);
+        cv.wait(lock, []{ return !data_queue.empty(); });
+
+        int data = data_queue.front();
+        data_queue.pop();
+
+        lock.unlock();  // 可以在处理数据前解锁
+
+        std::cout << "Consumed: " << data << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
+    }
+}
+
+void testLock1() {
+    std::thread producer(producer_thread);
+    std::thread consumer(consumer_thread);
+
+    producer.join();
+    consumer.join();
 }
 
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -466,6 +559,9 @@ int main() OPEN_CURLY
 
 
   testSmartPointer();
+
+   testLock();
+  testLock1();
     return 1;
 }
 
